@@ -4,17 +4,42 @@ const app = express();
 const server = require('http').Server(app);
 const io = require('socket.io')(server);
 
+const clients = [];
+const clientsNickname = [];
 
 
 io.on('connection', function(socket){
     console.log("a user connected");
-    const users = io.clients();
-    socket.on()
-    console.log(users)
+    //adding clients socket to clients array
+    clients.push(socket);
+    //allClients Id
+    var allConnectedClients = Object.keys(io.sockets.connected);
+    ///////////////
+
+
+    //set nickname to user that just connected
+    socket.on('nickname', function(nickname) {
+        socket.nickname = nickname;
+        clientsNickname.push(socket.nickname);
+        console.log(clientsNickname);
+    })
+
+
+
+
+
+
+
+
+
     
-    socket.emit('Test event', 'here is AND AGAIN');
 });
+
+io.emit('Test', 'hi')
+
+
 
 server.listen(3000, () => {
     console.log("socket.io server is listening on port 3000");
 })
+

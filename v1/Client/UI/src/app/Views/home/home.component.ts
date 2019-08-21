@@ -12,18 +12,22 @@ export class HomeComponent implements OnInit {
 
   ngOnInit() {
 //here we want to connect to the socket.io server
-this._webSocketService.listen('Test event').subscribe(data => {
+this._webSocketService.listen('Test').subscribe(data => {
   console.log(data)
+
+this._webSocketService.setNickName("carapan");
 })
+// this.getAllUsers()
+
 
 
   }
 
-    public getAllUsers(){
-      this._webSocketService.listen('userlist').subscribe(data => {
-        console.log(data)
-      })
-    }
+    // public getAllUsers(){
+    //   this._webSocketService.listen('connect').subscribe(data => {
+    //     console.log(data)
+    //   })
+    // }
  
 
  

@@ -27,4 +27,20 @@ export class WebsocketService {
   emit(eventName: string, data: any){
     this.socket.emit(eventName, data);
   }
+
+  setProperty(property: string, value: string){
+    this.socket.set(property, value)
+  }
+
+  setNickName(nickname: string){
+    this.socket.emit('nickname', nickname);
+
+
+  }
+
+
+
+
+
+  
 }
