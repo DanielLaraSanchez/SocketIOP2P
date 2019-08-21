@@ -5,37 +5,54 @@ const server = require('http').Server(app);
 const io = require('socket.io')(server);
 
 const clients = [];
-const clientsNickname = [];
 
 
-io.on('connection', function(socket){
+io.on('connect', function(socket){
     console.log("a user connected");
+    var newUserObject = {
+        id: socket.id,
+        nickname: null
+    }
     //adding clients socket to clients array
-    clients.push(socket);
+
     //allClients Id
     var allConnectedClients = Object.keys(io.sockets.connected);
     ///////////////
-
+    console.log(socket.id)
 
     //set nickname to user that just connected
     socket.on('nickname', function(nickname) {
         socket.nickname = nickname;
-        clientsNickname.push(socket.nickname);
-        console.log(clientsNickname);
-    })
+        newUserObject.nickname = nickname
+        clients.push(newUserObject);
+    });
+
+    socket.on('disconnect', function(){
+        removeClientThatDisconnected(socket.id)
+    }).emit('userslist', clients)
+
+    io.emit('userslist', clients)
+    
+
+    var removeClientThatDisconnected = function(id){
+        clients.forEach(function(client){
+            if(client.id === id){
+                clients.splice(client, 1)
+                console.log(clients.length)
+            }
+        })
+    }
 
 
-
-
-
-
-
-
+     
 
     
 });
 
-io.emit('Test', 'hi')
+
+
+
+
 
 
 
