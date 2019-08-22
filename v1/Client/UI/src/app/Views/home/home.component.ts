@@ -12,41 +12,43 @@ export class HomeComponent implements OnInit {
 
   ngOnInit() {
 
-this.connect();
-
-this.listenforTest();
-
-this.getUserList();
- 
-this.listenForDisconnections();
- 
-}
+    this.connect();
 
 
 
-connect(){
-  //here we want to connect to the socket.io server
-  this._webSocketService.listen('connect').subscribe(data => {
-
-    console.log(data)
-  
-  this._webSocketService.setNickName("carapan");
-  })
   }
 
-  listenforTest(){
-    this._webSocketService.listen('Test').subscribe(data => {
-      console.log(data)
+  connect() {
+    this.connectWithServer();
+    this.getUserListOnConnection();
+    this.getUserListOnDisconnection();
+    this.listenForDisconnections();
+
+  }
+
+
+
+  connectWithServer() {
+    //here we want to connect to the socket.io server
+    this._webSocketService.listen('connect').subscribe(data => {
+      this._webSocketService.setNickName("carapan");
     })
   }
 
-  getUserList(){
-    this._webSocketService.listen('userslist').subscribe(data => {
+
+
+  getUserListOnConnection() {
+    this._webSocketService.listen('userslistonConnection').subscribe(data => {
+      console.log(data, "userlist")
+    })
+  }
+  getUserListOnDisconnection() {
+    this._webSocketService.listen('userslistonDisconnection').subscribe(data => {
       console.log(data, "userlist")
     })
   }
 
-  listenForDisconnections(){
+  listenForDisconnections() {
     this._webSocketService.listen('disconnection').subscribe(data => {
       console.log(data, "disconnection")
     })
