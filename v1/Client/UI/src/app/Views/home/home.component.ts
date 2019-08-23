@@ -19,11 +19,10 @@ export class HomeComponent implements OnInit {
   }
 
   connect() {
-    this.connectWithServer();
+    this.connectWithServer();  
+    this.listenForDisconnections();
     this.getUserListOnConnection();
     this.getUserListOnDisconnection();
-    this.listenForDisconnections();
-
   }
 
 
