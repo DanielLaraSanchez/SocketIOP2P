@@ -8,18 +8,10 @@ import * as io from 'socket.io-client';
 export class WebsocketService {
   socket: any;
   readonly URL: string = "ws://localhost:3000";
-  peerConnection1: RTCPeerConnection;
-  peerConnection2: RTCPeerConnection;
 
 
   constructor() { 
     this.socket = io(this.URL)
-    console.log(this.socket);
-    this.peerConnection1 = new RTCPeerConnection();
-    this.peerConnection2 = new RTCPeerConnection();
-
-
-    
   }
 
 
