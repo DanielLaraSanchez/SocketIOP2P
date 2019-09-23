@@ -2,10 +2,15 @@
   home works!
 </p>
 
-<button (click)="sendOffer()">Send offer</button>
-<button (click)="onOffer()">new on offer</button>
-<button (click)="endCall()">End Call</button>
+<button (click)="sendOffer(this.socket)">Send offer</button>
+<button (click)="onOffer(this.socket)">new on offer</button>
+<button (click)="endCall(this.socket)">End Call</button>
 <button (click)="test()">Test</button>
+<button (click)="readyToBattle()">readyToBattle</button>
+
+<button (click)="onOfferTest()">onOfferTest</button>
+<button (click)="sendOfferTest()">sendOfferTest</button>
+
 
 
 <div class="row">
