@@ -16,36 +16,35 @@ class Moderator {
         }
     }
 
-    getConnectionWaitingAndInsertPeer(connArray, peerId) {
+    getConnectionWaiting(connArray) {
         let result;
         connArray.forEach((conn) => {
             if (conn.reciever === null && conn.sender != null) {
-                conn.reciever = peerId;
-                result = true;
-                console.log("insideFirst if")
+                result = conn.id;
             } else if (conn.sender === null && conn.reciever != null) {
-                conn.sender = peerId;
-                result = true;
-                console.log("inside second if")
-
+                result = conn.id;
             } else {
                 result = false;
-                console.log("inside else")
-
             }
         });
-        console.log(result, "result")
         return result;
     }
 
     insertPeerInConnection(connArray, connId, peerid) {
+       
         connArray.forEach((conn) => {
-            if (conn.id === connId && conn.reciever === null) {
+            console.log(conn, "conn")
+            if (conn.id === connId && conn.reciever === null && conn.sender != peerid) {
+                console.log("46")
                 conn.reciever = peerid;
-            } else if (conn.id === connId && conn.sender === null) {
-                conn.sender = peerid
+            } else if (conn.id === connId && conn.sender === null && conn.reciever != peerid) {
+                console.log("49")
+                conn.sender = peerid;
+            }else{
+                console.log("no funciona 50", conn.id,connId, conn.reciever, conn.sender)
             }
         })
+        
     }
 
     setIsReadyOnPeer(peerArray, peerId) {

@@ -14,6 +14,8 @@ let broadcaster;
 const clients = [];
 const activeConnections = [];
 
+
+
 io.sockets.on('connection', function (socket) {
     let peer = new Peer();
     peer.socketid = socket.id;
@@ -21,21 +23,9 @@ io.sockets.on('connection', function (socket) {
     console.log('Currently there are ' + clients.length + ' connected', clients);
   
     socket.on('readyToBattle', function (socketid) {
-    if(activeConnections.length === 0){
-      let conn = new BattleConnection();
-      conn.reciever = socketid;
-      activeConnections.push(conn)
-    }else{
-      let isPeerAlreadyInConnection = Moderator.checkIfClientIsAlreadyInConnection(activeConnections, socketid);
-      let connWaiting = Moderator.getConnectionWaitingAndInsertPeer(activeConnections, socketid)
-      if(!isPeerAlreadyInConnection && !connWaiting){
-      let conn = new BattleConnection();
-      conn.reciever = socketid;
-      activeConnections.push(conn)
-      }else if(!isPeerAlreadyInConnection && connWaiting){
-        Moderator.insertPeerInConnection(activeConnections, connWaiting, socketid)
-      }
-    }
+     let connectionForThisPeer = createConnections(socketid);
+
+      console.log(activeConnections,connectionForThisPeer, "28")
       socket.emit('responsability', peer) 
     })
   
@@ -80,6 +70,36 @@ io.sockets.on('connection', function (socket) {
       broadcaster && socket.to(broadcaster).emit('bye', id)
     })
   });
+
+
+
+
+
+
+
+///tools
+  function createConnections(socketid){
+    let connectionId;
+    if(activeConnections.length === 0){
+      let conn = new BattleConnection();
+      conn.reciever = socketid;
+      activeConnections.push(conn)
+      connectionId = conn.id;
+    }else{
+      let isPeerAlreadyInConnection = Moderator.checkIfClientIsAlreadyInConnection(activeConnections, socketid);
+      let connWaiting = Moderator.getConnectionWaiting(activeConnections)
+      if(!isPeerAlreadyInConnection && !connWaiting){
+      let conn = new BattleConnection();
+      conn.reciever = socketid;
+      activeConnections.push(conn);
+      connectionId = conn.id;
+      }else if(!isPeerAlreadyInConnection && connWaiting){
+        Moderator.insertPeerInConnection(activeConnections, connWaiting, socketid)
+        connectionId = connWaiting;
+      }
+    }
+    return connectionId;
+  }
   
 
 
