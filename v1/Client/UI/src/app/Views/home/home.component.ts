@@ -25,7 +25,9 @@ export class HomeComponent implements OnInit {
     // this.onOffer();
     this.onOfferNuevo(this.onOffer, this.sendOffer);
   
-this.readyToBattle();  }
+// this.readyToBattle();
+
+}
 
 
 
