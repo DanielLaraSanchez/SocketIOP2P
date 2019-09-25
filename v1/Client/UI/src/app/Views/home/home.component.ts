@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { WebsocketService } from 'src/app/Services/websocket.service';
 import * as io from 'socket.io-client';
-import * as SimplePeer from 'simple-peer';
 
 @Component({
   selector: 'app-home',
@@ -25,7 +24,9 @@ export class HomeComponent implements OnInit {
     // this.onOffer();
     this.onOfferNuevo(this.onOffer, this.sendOffer);
   
-this.readyToBattle();  }
+// this.readyToBattle(); 
+
+}
 
 
 
