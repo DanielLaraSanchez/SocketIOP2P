@@ -13,6 +13,7 @@ export class Home2Component implements OnInit {
   peerConnection;
   socket;
   pairedPeerWaiting = false;
+  sender;
 
   constructor(public _webSocketService: WebsocketService) {
     this.socket = this._webSocketService.socket;
@@ -37,7 +38,6 @@ export class Home2Component implements OnInit {
   }
 
   onOffer(socket) {
-    const peerConnections = {};
     let peerConnection = new RTCPeerConnection();
     let video = document.createElement('video');
     let div = document.getElementById('video1Div');
@@ -69,7 +69,7 @@ export class Home2Component implements OnInit {
       let stream = video.srcObject;
 
       (<MediaStream>stream).getTracks().forEach(track => {
-        peerConnection.addTrack(track, <MediaStream>stream)
+       this.sender = peerConnection.addTrack(track, <MediaStream>stream)
       });
 
       peerConnection.ontrack = function (event) {
@@ -95,7 +95,10 @@ export class Home2Component implements OnInit {
     });
 
     socket.on('bye', function () {
+      peerConnection.removeTrack(this.sender);
       peerConnection.close();
+      peerConnection = new RTCPeerConnection();
+      // peerConnection = undefined;
       console.log("dentro de bye")
       video.hidden = true;
       videoOtherPeer.hidden = true;
@@ -107,12 +110,16 @@ export class Home2Component implements OnInit {
        (<MediaStream>otherPeerStream).getTracks().forEach(track => {
         track.stop();
        });
+       
+
+       socket.emit('imfree', socket.id)
+
     });
 
 
   }
   sendOffer(socket, recieverId) {
-    const peerConnections = {};
+    let peerConnections = {};
     let video = document.createElement('video');
     let div = document.getElementById('video1Div');
     video.height = 200;
@@ -139,12 +146,12 @@ export class Home2Component implements OnInit {
 
 
       socket.on('watcher', function () {
-        const peerConnection = new RTCPeerConnection();
+        let peerConnection = new RTCPeerConnection();
         console.log(peerConnections, "peerconnections")
         peerConnections[recieverId] = peerConnection;
         let stream = video.srcObject;
         (<MediaStream>stream).getTracks().forEach(track => {
-          peerConnection.addTrack(track, <MediaStream>stream)
+         this.sender =  peerConnection.addTrack(track, <MediaStream>stream)
         });
         peerConnection.createOffer().then(sdp => peerConnection.setLocalDescription(sdp)).then(function () {
           socket.emit('offer', recieverId, peerConnection.localDescription);
@@ -170,8 +177,11 @@ export class Home2Component implements OnInit {
       });
 
       socket.on('bye', function (id) {
-        console.log("inside bye onoffer")
+        console.log("inside bye onoffer", id, peerConnections[recieverId], recieverId)
+        peerConnections[id].removeTrack(this.sender)
+
         peerConnections[id] && peerConnections[id].close();
+        // peerConnections = {}
         delete peerConnections[id];
         video.hidden = true;
         let stream = video.srcObject;
@@ -183,6 +193,8 @@ export class Home2Component implements OnInit {
         track.stop();
        });
 
+
+       socket.emit('imfree', socket.id)
 
       });
 
